@@ -11,11 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import io.jsonwebtoken.Jwts;
@@ -24,47 +27,66 @@ import app.rest.invit.SpringApplicationContext;
 import app.rest.invit.requests.UserLoginRequestModel;
 import app.rest.invit.services.UserServiceInterface;
 import app.rest.invit.dto.UserDto;
+import app.rest.invit.entities.UserEntity;
+import app.rest.invit.repositories.UserRepository;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+	@Autowired
+	private UserRepository userRepository;
 
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
+	public AuthenticationFilter(AuthenticationManager authenticationManager) {
+		this.authenticationManager = authenticationManager;
+	}
 
-        try {
-            UserLoginRequestModel userModel = new ObjectMapper().readValue(request.getInputStream(),
-                    UserLoginRequestModel.class);
+	@Override
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+			throws AuthenticationException {
 
-            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userModel.getEmail(),
-                    userModel.getPassword(), new ArrayList<>()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+		try {
+			UserLoginRequestModel userModel = new ObjectMapper().readValue(request.getInputStream(),
+					UserLoginRequestModel.class);
 
-    }
+			// Autenticar al usuario
+			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+					userModel.getEmail(), userModel.getPassword(), new ArrayList<>()));
 
-    @Override
-    public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-            Authentication authentication) throws IOException, ServletException {
-        String username = ((User) authentication.getPrincipal()).getUsername();
+			// Buscar al usuario por correo electrónico
+			UserServiceInterface userService = (UserServiceInterface) SpringApplicationContext.getBean("userService");
+			UserDto userDto = userService.getUser(userModel.getEmail());
+			if (userDto == null) {
+				throw new UsernameNotFoundException("Usuario no encontrado.");
+			}
 
-        String token = Jwts.builder().setSubject(username)
-                .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_DATE))
-                .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret()).compact();
+			// Verificar que el usuario tenga emailcheck=1
+			if (userDto.getUserState() != 1) {
+				throw new BadCredentialsException("El usuario no ha verificado su correo electrónico.");
+			}
 
-        UserServiceInterface userService = (UserServiceInterface) SpringApplicationContext.getBean("userService");
-        UserDto userDto = userService.getUser(username);
+			return authentication;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-        response.addHeader("Access-Control-Expose-Headers", "Authorization, UserId");
-        response.addHeader("UserId", userDto.getUserId());
-        response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+	@Override
+	public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+			Authentication authentication) throws IOException, ServletException {
+		String username = ((User) authentication.getPrincipal()).getUsername();
 
-    }
+		String token = Jwts.builder().setSubject(username)
+				.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_DATE))
+				.signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret()).compact();
+
+		UserServiceInterface userService = (UserServiceInterface) SpringApplicationContext.getBean("userService");
+		UserDto userDto = userService.getUser(username);
+
+		response.addHeader("Access-Control-Expose-Headers", "Authorization, UserId");
+		response.addHeader("UserId", userDto.getUserId());
+		response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+
+	}
 
 }

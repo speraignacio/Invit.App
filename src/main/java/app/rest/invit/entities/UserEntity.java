@@ -38,6 +38,9 @@ public class UserEntity implements Serializable {
 
     @Column(nullable = false)
     private String encryptedPassword;
+    
+    @Column(nullable = false, length = 1)
+    private int userState;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<PostEntity> posts = new ArrayList<>();
@@ -90,7 +93,15 @@ public class UserEntity implements Serializable {
         this.encryptedPassword = encryptedPassword;
     }
 
-    public List<PostEntity> getPosts() {
+    public int getUserState() {
+		return userState;
+	}
+
+	public void setUserState(int userState) {
+		this.userState = userState;
+	}
+
+	public List<PostEntity> getPosts() {
         return this.posts;
     }
 

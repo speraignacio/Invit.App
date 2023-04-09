@@ -63,6 +63,22 @@ public class UserControllers {
 
 		return userToReturn;
 	}
+	
+	@PostMapping(path = "checkEmail/{id}")
+	public UserRest checkEmail(@RequestBody @Valid UserDetailsRequestModel userDetails) {
+
+		UserRest userToReturn = new UserRest();
+
+		UserDto userDto = new UserDto();
+
+		BeanUtils.copyProperties(userDetails, userDto);
+
+		UserDto createdUser = userService.checkEmail(userDto);
+
+		BeanUtils.copyProperties(createdUser, userToReturn);
+
+		return userToReturn;
+	}
 
 	@GetMapping(path = "/posts") // localhost:8080/users/posts
 	public List<PostRest> getPosts() {

@@ -14,6 +14,7 @@ public class UserDto implements Serializable {
     private String email;
     private String password;
     private String encryptedPassword;
+    private int userState;
     private List<PostDto> posts;
 
     public long getId() {
@@ -71,6 +72,14 @@ public class UserDto implements Serializable {
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
     }
+    
+    public int getUserState() {
+		return userState;
+	}
+
+	public void setUserState(int userState) {
+		this.userState = userState;
+	}
 
     public List<PostDto> getPosts() {
         return this.posts;
