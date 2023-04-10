@@ -57,7 +57,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 			UserServiceInterface userService = (UserServiceInterface) SpringApplicationContext.getBean("userService");
 			UserDto userDto = userService.getUser(userModel.getEmail());
 			if (userDto == null) {
-				throw new UsernameNotFoundException("Usuario no encontrado.");
+				throw new BadCredentialsException("Usuario no encontrado.");
 			}
 
 			// Verificar que el usuario tenga emailcheck=1
