@@ -13,7 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import app.rest.invit.dto.PostDto;
 import app.rest.invit.dto.UserDto;
 import app.rest.invit.requests.UserDetailsRequestModel;
+import app.rest.invit.requests.UserIdRequestModel;
 import app.rest.invit.responses.PostRest;
 import app.rest.invit.responses.UserRest;
 import app.rest.invit.services.UserServiceInterface;
@@ -64,20 +67,20 @@ public class UserControllers {
 		return userToReturn;
 	}
 	
-	@PostMapping(path = "checkEmail/{id}")
-	public UserRest checkEmail(@RequestBody @Valid UserDetailsRequestModel userDetails) {
+	@PostMapping("/checkMail")
+	public UserRest checkMail(@RequestBody @Valid UserIdRequestModel userId) {
 
-		UserRest userToReturn = new UserRest();
+//		UserRest userToReturn = new UserRest();
 
-		UserDto userDto = new UserDto();
+		UserDto userDto = userService.getUserId(userId.getIdUser());
 
-		BeanUtils.copyProperties(userDetails, userDto);
+        UserRest userRest = mapper.map(userDto, UserRest.class);
 
 		UserDto createdUser = userService.checkEmail(userDto);
 
-		BeanUtils.copyProperties(createdUser, userToReturn);
+		BeanUtils.copyProperties(createdUser, userRest);
 
-		return userToReturn;
+		return userRest;
 	}
 
 	@GetMapping(path = "/posts") // localhost:8080/users/posts

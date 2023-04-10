@@ -115,6 +115,21 @@ public class UserService implements UserServiceInterface {
 		return userToReturn;
 	}
 	
+	@Override
+	public UserDto getUserId(String userId) {
+		UserEntity userEntity = userRepository.findByUserID(userId);
+
+		if (userEntity == null) {
+			throw new UsernameNotFoundException("No existe id");
+		}
+
+		UserDto userToReturn = new UserDto();
+
+		BeanUtils.copyProperties(userEntity, userToReturn);
+
+		return userToReturn;
+	}
+	
 	
 	@Override
 	public List<PostDto> getUserPosts(String email) {
@@ -152,7 +167,7 @@ public class UserService implements UserServiceInterface {
 
 		// Creación del mensaje de correo electrónico
 		Message message = new MimeMessage(session);
-		String enlace = "http://localhost:3000/confirmar-cuenta?idUser=" + userEntity.getUserId();
+		String enlace = "http://localhost:3000/confirmarCuenta/" + userEntity.getUserId();
 		message.setFrom(new InternetAddress("info.invit.app@gmail.com"));
 		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(userEntity.getEmail()));
 		message.setSubject("Confirmación de alta de usuario");
