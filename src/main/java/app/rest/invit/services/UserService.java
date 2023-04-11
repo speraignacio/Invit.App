@@ -120,7 +120,7 @@ public class UserService implements UserServiceInterface {
 		UserEntity userEntity = userRepository.findByUserID(userId);
 
 		if (userEntity == null) {
-			throw new UsernameNotFoundException("No existe id");
+			throw new UsernameNotFoundException("No existe usuario");
 		}
 
 		UserDto userToReturn = new UserDto();
