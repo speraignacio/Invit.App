@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import app.rest.invit.entities.PostEntity;
+import app.rest.invit.entities.EventEntity;
 import app.rest.invit.entities.UserEntity;
 
 @Repository

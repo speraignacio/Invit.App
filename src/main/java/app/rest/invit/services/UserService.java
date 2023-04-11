@@ -21,12 +21,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import app.rest.invit.repositories.PostRepository;
+import app.rest.invit.repositories.EventRepository;
 import app.rest.invit.repositories.UserRepository;
-import app.rest.invit.entities.PostEntity;
+import app.rest.invit.entities.EventEntity;
 import app.rest.invit.entities.UserEntity;
 import app.rest.invit.exceptions.EmailExistsException;
-import app.rest.invit.dto.PostDto;
+import app.rest.invit.dto.EventDto;
 import app.rest.invit.dto.UserDto;
 
 @Service
@@ -36,7 +36,7 @@ public class UserService implements UserServiceInterface {
 	UserRepository userRepository;
 
 	@Autowired
-	PostRepository postRepository;
+	EventRepository eventRepository;
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -132,20 +132,20 @@ public class UserService implements UserServiceInterface {
 	
 	
 	@Override
-	public List<PostDto> getUserPosts(String email) {
+	public List<EventDto> getUserEvents(String email) {
 
 		UserEntity userEntity = userRepository.findByEmail(email);
 
-		List<PostEntity> posts = postRepository.getByUserIdOrderByCreatedAtDesc(userEntity.getId());
+		List<EventEntity> events = eventRepository.getByUserIdOrderByCreatedAtDesc(userEntity.getId());
 
-		List<PostDto> postDtos = new ArrayList<>();
+		List<EventDto> eventDtos = new ArrayList<>();
 
-		for (PostEntity post : posts) {
-			PostDto postDto = mapper.map(post, PostDto.class);
-			postDtos.add(postDto);
+		for (EventEntity event : events) {
+			EventDto eventDto = mapper.map(event, EventDto.class);
+			eventDtos.add(eventDto);
 		}
 
-		return postDtos;
+		return eventDtos;
 	}
 
 	// Método para enviar un correo electrónico

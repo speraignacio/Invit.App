@@ -15,7 +15,7 @@ public class UserDto implements Serializable {
     private String password;
     private String encryptedPassword;
     private int userState;
-    private List<PostDto> posts;
+    private List<EventDto> events;
 
     public long getId() {
         return this.id;
@@ -81,12 +81,12 @@ public class UserDto implements Serializable {
 		this.userState = userState;
 	}
 
-    public List<PostDto> getPosts() {
-        return this.posts;
+    public List<EventDto> getEvents() {
+        return this.events;
     }
 
-    public void setPosts(List<PostDto> posts) {
-        this.posts = posts;
+    public void setEvents(List<EventDto> events) {
+        this.events = events;
     }
 
 }

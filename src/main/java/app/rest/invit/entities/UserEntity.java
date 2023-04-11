@@ -43,7 +43,7 @@ public class UserEntity implements Serializable {
     private int userState;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<PostEntity> posts = new ArrayList<>();
+    private List<EventEntity> events = new ArrayList<>();
 
     public void setId(long id) {
         this.id = id;
@@ -101,12 +101,12 @@ public class UserEntity implements Serializable {
 		this.userState = userState;
 	}
 
-	public List<PostEntity> getPosts() {
-        return this.posts;
+	public List<EventEntity> getEvents() {
+        return this.events;
     }
 
-    public void setPosts(List<PostEntity> posts) {
-        this.posts = posts;
+    public void setEvents(List<EventEntity> events) {
+        this.events = events;
     }
 
 }

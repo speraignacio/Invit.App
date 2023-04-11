@@ -14,7 +14,7 @@ public class ExposureDto implements Serializable {
 
     private String type;
 
-    private List<PostDto> posts;
+    private List<EventDto> events;
 
     public long getId() {
         return this.id;
@@ -32,12 +32,12 @@ public class ExposureDto implements Serializable {
         this.type = type;
     }
 
-    public List<PostDto> getPosts() {
-        return this.posts;
+    public List<EventDto> getEvents() {
+        return this.events;
     }
 
-    public void setPosts(List<PostDto> posts) {
-        this.posts = posts;
+    public void setEvents(List<EventDto> events) {
+        this.events = events;
     }
 
 }

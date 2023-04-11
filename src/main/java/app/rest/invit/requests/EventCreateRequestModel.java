@@ -1,23 +1,25 @@
-package app.rest.invit.dto;
+package app.rest.invit.requests;
 
-import java.io.Serializable;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-public class PostCreationDto implements Serializable {
+import org.hibernate.validator.constraints.Range;
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+public class EventCreateRequestModel {
 
+    @NotEmpty(message = "El titulo es obligatorio")
     private String title;
 
+    @NotEmpty(message = "El contenido es obligatorio")
     private String content;
 
+    @NotNull(message = "La exposicion del evento es obligatoria")
+    @Range(min = 1, max = 2, message = "La exposicion del evento es invalida")
     private long exposureId;
 
+    @NotNull(message = "El tiempo de expiracion es obligatorio")
+    @Range(min = 0, max = 1440, message = "El tiempo de expiracion es invalido")
     private int expirationTime;
-
-    private String userEmail;
 
     public String getTitle() {
         return this.title;
@@ -50,13 +52,4 @@ public class PostCreationDto implements Serializable {
     public void setExpirationTime(int expirationTime) {
         this.expirationTime = expirationTime;
     }
-
-    public String getUserEmail() {
-        return this.userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
 }

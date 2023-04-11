@@ -2,8 +2,8 @@ package app.rest.invit.responses;
 
 import java.util.Date;
 
-public class PostRest {
-    private String postId;
+public class EventRest {
+    private String eventId;
 
     private String title;
 
@@ -19,12 +19,12 @@ public class PostRest {
 
     private ExposureRest exposure;
 
-    public String getPostId() {
-        return this.postId;
+    public String getEventId() {
+        return this.eventId;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public String getTitle() {

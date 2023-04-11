@@ -3,7 +3,7 @@ package app.rest.invit.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-public class PostDto implements Serializable {
+public class EventDto implements Serializable {
 
     /**
      *
@@ -12,7 +12,7 @@ public class PostDto implements Serializable {
 
     private long id;
 
-    private String postId;
+    private String eventId;
 
     private String title;
 
@@ -34,12 +34,12 @@ public class PostDto implements Serializable {
         this.id = id;
     }
 
-    public String getPostId() {
-        return this.postId;
+    public String getEventId() {
+        return this.eventId;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public String getTitle() {

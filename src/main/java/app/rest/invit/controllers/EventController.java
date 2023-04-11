@@ -19,22 +19,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.rest.invit.requests.PostCreateRequestModel;
+import app.rest.invit.requests.EventCreateRequestModel;
 import app.rest.invit.responses.OperationStatusModel;
-import app.rest.invit.responses.PostRest;
-import app.rest.invit.services.PostServiceInterface;
+import app.rest.invit.responses.EventRest;
+import app.rest.invit.services.EventServiceInterface;
 import app.rest.invit.services.UserServiceInterface;
-import app.rest.invit.dto.PostCreationDto;
-import app.rest.invit.dto.PostDto;
+import app.rest.invit.dto.EventCreationDto;
+import app.rest.invit.dto.EventDto;
 import app.rest.invit.dto.UserDto;
 import app.rest.invit.utils.Exposures;
 
 @RestController
-@RequestMapping("/posts")
-public class PostController {
+@RequestMapping("/events")
+public class EventController {
 
     @Autowired
-    PostServiceInterface postService;
+    EventServiceInterface eventService;
 
     @Autowired
     UserServiceInterface userService;
@@ -43,60 +43,60 @@ public class PostController {
     ModelMapper mapper;
 
     @PostMapping
-    public PostRest createPost(@RequestBody @Valid PostCreateRequestModel createRequestModel) {
+    public EventRest createEvent(@RequestBody @Valid EventCreateRequestModel createRequestModel) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String email = authentication.getPrincipal().toString();
 
-        PostCreationDto postCreationDto = mapper.map(createRequestModel, PostCreationDto.class);
+        EventCreationDto eventCreationDto = mapper.map(createRequestModel, EventCreationDto.class);
 
-        postCreationDto.setUserEmail(email);
+        eventCreationDto.setUserEmail(email);
 
-        PostDto postDto = postService.createPost(postCreationDto);
+        EventDto eventDto = eventService.createEvent(eventCreationDto);
 
-        PostRest postToReturn = mapper.map(postDto, PostRest.class);
+        EventRest eventToReturn = mapper.map(eventDto, EventRest.class);
 
-        return postToReturn;
+        return eventToReturn;
     }
 
-    @GetMapping(path = "/last") // localhost:8080/posts/last
-    public List<PostRest> lastPosts() {
-        List<PostDto> posts = postService.getLastPosts();
+    @GetMapping(path = "/last") // localhost:8080/events/last
+    public List<EventRest> lastEvents() {
+        List<EventDto> events = eventService.getLastEvents();
 
-        List<PostRest> postRests = new ArrayList<>();
+        List<EventRest> eventRests = new ArrayList<>();
 
-        for (PostDto post : posts) {
-            PostRest postRest = mapper.map(post, PostRest.class);
-            postRests.add(postRest);
+        for (EventDto event : events) {
+            EventRest eventRest = mapper.map(event, EventRest.class);
+            eventRests.add(eventRest);
         }
 
-        return postRests;
+        return eventRests;
     }
 
-    @GetMapping(path = "/{id}") // localhost:8080/posts/uuid
-    public PostRest getPost(@PathVariable String id) {
+    @GetMapping(path = "/{id}") // localhost:8080/events/uuid
+    public EventRest getEvent(@PathVariable String id) {
 
-        PostDto postDto = postService.getPost(id);
+        EventDto eventDto = eventService.getEvent(id);
 
-        PostRest postRest = mapper.map(postDto, PostRest.class);
+        EventRest eventRest = mapper.map(eventDto, EventRest.class);
 
-        // VALIDAR SI EL POST ES PRIVADO O SI EL POST YA EXPIRO
-        if (postRest.getExposure().getId() == Exposures.PRIVATE || postRest.getExpired()) {
+        // VALIDAR SI EL EVENTO ES PRIVADO O SI EL EVENTO YA EXPIRO
+        if (eventRest.getExposure().getId() == Exposures.PRIVATE || eventRest.getExpired()) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             UserDto user = userService.getUser(authentication.getPrincipal().toString());
 
-            if (user.getId() != postDto.getUser().getId()) {
+            if (user.getId() != eventDto.getUser().getId()) {
                 throw new RuntimeException("No tienes permisos para realizar esta accion");
             }
         }
 
-        return postRest;
+        return eventRest;
     }
 
     @DeleteMapping(path = "/{id}")
-    public OperationStatusModel deletePost(@PathVariable String id) {
+    public OperationStatusModel deleteEvent(@PathVariable String id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         UserDto user = userService.getUser(authentication.getPrincipal().toString());
@@ -104,26 +104,26 @@ public class PostController {
         OperationStatusModel operationStatusModel = new OperationStatusModel();
         operationStatusModel.setName("DELETE");
 
-        postService.deletePost(id, user.getId());
+        eventService.deleteEvent(id, user.getId());
         operationStatusModel.setResult("SUCCESS");
 
         return operationStatusModel;
     }
 
     @PutMapping(path = "/{id}")
-    public PostRest updatePost(@RequestBody @Valid PostCreateRequestModel postCreateRequestModel,
+    public EventRest updateEvent(@RequestBody @Valid EventCreateRequestModel eventCreateRequestModel,
             @PathVariable String id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         UserDto user = userService.getUser(authentication.getPrincipal().toString());
 
-        PostCreationDto postUpdateDto = mapper.map(postCreateRequestModel, PostCreationDto.class);
+        EventCreationDto eventUpdateDto = mapper.map(eventCreateRequestModel, EventCreationDto.class);
 
-        PostDto postDto = postService.updatePost(id, user.getId(), postUpdateDto);
+        EventDto eventDto = eventService.updateEvent(id, user.getId(), eventUpdateDto);
 
-        PostRest updatedPost = mapper.map(postDto, PostRest.class);
+        EventRest updatedEvent = mapper.map(eventDto, EventRest.class);
 
-        return updatedPost;
+        return updatedEvent;
     }
 
 }

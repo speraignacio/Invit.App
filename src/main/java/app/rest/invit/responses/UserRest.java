@@ -7,7 +7,7 @@ public class UserRest {
 	private String firstName;
 	private String lastName;
 	private String email;
-	private List<PostRest> posts;
+	private List<EventRest> events;
 
 	public String getFirstName() {
 		return this.firstName;
@@ -41,12 +41,12 @@ public class UserRest {
 		this.userId = userId;
 	}
 
-	public List<PostRest> getPosts() {
-		return this.posts;
+	public List<EventRest> getEvents() {
+		return this.events;
 	}
 
-	public void setPosts(List<PostRest> posts) {
-		this.posts = posts;
+	public void setEvents(List<EventRest> events) {
+		this.events = events;
 	}
 
 }

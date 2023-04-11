@@ -16,10 +16,10 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity(name = "posts")
+@Entity(name = "events")
 @EntityListeners(AuditingEntityListener.class)
-@Table(indexes = @Index(columnList = "postId", name = "index_postid", unique = true))
-public class PostEntity implements Serializable {
+@Table(indexes = @Index(columnList = "eventId", name = "index_eventid", unique = true))
+public class EventEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ public class PostEntity implements Serializable {
     private long id;
 
     @Column(nullable = false)
-    private String postId;
+    private String eventId;
 
     @Column(nullable = false, length = 255)
     private String title;
@@ -58,12 +58,12 @@ public class PostEntity implements Serializable {
         this.id = id;
     }
 
-    public String getPostId() {
-        return this.postId;
+    public String getEventId() {
+        return this.eventId;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public String getTitle() {

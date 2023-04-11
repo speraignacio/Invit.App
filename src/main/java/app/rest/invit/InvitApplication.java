@@ -43,7 +43,7 @@ public class InvitApplication {
 	public ModelMapper modelMapper() {
 		ModelMapper mapper = new ModelMapper();
 
-		mapper.typeMap(UserDto.class, UserRest.class).addMappings(m -> m.skip(UserRest::setPosts));
+		mapper.typeMap(UserDto.class, UserRest.class).addMappings(m -> m.skip(UserRest::setEvents));
 
 		return mapper;
 	}

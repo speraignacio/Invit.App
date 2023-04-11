@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.rest.invit.dto.PostDto;
+import app.rest.invit.dto.EventDto;
 import app.rest.invit.dto.UserDto;
 import app.rest.invit.requests.UserDetailsRequestModel;
 import app.rest.invit.requests.UserIdRequestModel;
-import app.rest.invit.responses.PostRest;
+import app.rest.invit.responses.EventRest;
 import app.rest.invit.responses.UserRest;
 import app.rest.invit.services.UserServiceInterface;
 
@@ -83,24 +83,24 @@ public class UserControllers {
 		return userRest;
 	}
 
-	@GetMapping(path = "/posts") // localhost:8080/users/posts
-	public List<PostRest> getPosts() {
+	@GetMapping(path = "/events") // localhost:8080/users/events
+	public List<EventRest> getEvents() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		String email = authentication.getPrincipal().toString();
 
-		List<PostDto> posts = userService.getUserPosts(email);
+		List<EventDto> events = userService.getUserEvents(email);
 
-		List<PostRest> postRests = new ArrayList<>();
+		List<EventRest> eventRests = new ArrayList<>();
 
-		for (PostDto post : posts) {
-			PostRest postRest = mapper.map(post, PostRest.class);
-			if (postRest.getExpiresAt().compareTo(new Date(System.currentTimeMillis())) < 0) {
-				postRest.setExpired(true);
+		for (EventDto event : events) {
+			EventRest eventRest = mapper.map(event, EventRest.class);
+			if (eventRest.getExpiresAt().compareTo(new Date(System.currentTimeMillis())) < 0) {
+				eventRest.setExpired(true);
 			}
-			postRests.add(postRest);
+			eventRests.add(eventRest);
 		}
 
-		return postRests;
+		return eventRests;
 	}
 }
